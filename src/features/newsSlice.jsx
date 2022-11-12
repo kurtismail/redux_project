@@ -7,42 +7,55 @@ const initialState = {
   error: false,
 };
 
+//? State'lerin API gibi async kaynaklardan gelen verilere gore guncellenmesi gerekebilir.
+//? Ancak boyle bir durumda async islem tamamlandiktan sonra state guncellenmelidir.
+//? Gonderilen api istegi ile dogrudan state guncellememelidir.
+//? Islemin tamamlanmasi ile gelen veriye gore state'in guncellenemsini saglamak
+//? adina bir arabirim kullanilmaktadir.
+//? Bu arabirim middleware denilir.Redux-Toolkit, default olarak Thunk kullanmaktadir.
+//! Thunk'ın amaci reducers'a islenmis sonuclari gondermeden once gecikmeli asenkron ismlerinin yurutulmesini saglamaktir.
+
 export const getNews = createAsyncThunk(
-  "getNews",
-async(thunkAPI, {rejectWithValue})=> {
-  const API_KEY ="1726c9caa0e04ffb8f3cf702ea757cc9";
-  const url = `https://newsapi.org/v2/top-headlines?country=tr&apiKey=${API_KEY}`;
-  try {
-    const {data} = await axios(url);
-    return data.articles;
-  } catch (error) {
-    console.log(error)
-    return rejectWithValue("something went wrong");
+  "getNews", //! action types
+
+  async (thunkAPI, { rejectWithValue }) => {
+    //! asyn callback function
+    const API_KEY = "1726c9caa0e04ffb8f3cf702ea757cc9";
+    const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}`;
+    try {
+      const { data } = await axios(url);
+      return data.articles;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong");
+    }
   }
-});
+);
 
 const newsSlice = createSlice({
   name: "news",
   initialState,
   reducers: {
-    clearNewList: (state) => {
+    clearNewsList: (state) => {
       state.newsList = [];
     },
   },
-  extraReducers:(builder) =>{
+  extraReducers: (builder) => {
     builder
-    .addCase(getNews.pending, (state)=>{
-      state.loading = true;
-    }).addCase(getNews.fulfilled, (state, {payload})=>{
-      state.newsList = payload;
-      state.loading = false;
-    }).addCase(getNews.rejected, (state, {payload})=> {
-      state.loading = false;
-      state.error = true;
-    })
-  }
+      .addCase(getNews.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getNews.fulfilled, (state, { payload }) => {
+        state.newsList = payload;
+        state.loading = false;
+      })
+      .addCase(getNews.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      });
+  },
 });
 
-export const { clearNewList } = newsSlice.actions;
+export const { clearNewsList } = newsSlice.actions;
 
 export default newsSlice.reducer;

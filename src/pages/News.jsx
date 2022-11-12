@@ -6,21 +6,36 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { CardMedia } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { getNews } from "../features/newsSlice";
+import { getNews, clearNewsList } from "../features/newsSlice";
 import { useEffect } from "react";
 import loadinGif from "../assets/loading.gif";
 
 const News = () => {
   const { newsList, loading, error } = useSelector((state) => state.news);
   const dispatch = useDispatch();
- //TODO
+//todo
   useEffect(() => {
     dispatch(getNews());
+
+    //! Cleanup function (ComponentDidUnmount)
+    //! State'de kalan news bilgilerini news sayfasidan ayrildiktan sonra sil.
+    return () => {
+      dispatch(clearNewsList());
+    };
   }, []);
 
   return (
     <>
-      {loading && <img src={loadinGif} />}
+      {error && (
+        <Typography variant="h3" color="error" align="center" mt={20}>
+          {error}
+        </Typography>
+      )}
+      {loading && (
+        <Box display="flex" alignItems="center" justifyContent="center">
+          <img src={loadinGif} />
+        </Box>
+      )}
       {!loading && (
         <Box
           xs={{ d: "flex" }}
