@@ -4,6 +4,8 @@
 
 ```
 npm install veya yarn
+yarn add react-redux @reduxjs/toolkit
+
 ```
 
 ## `Kullanilan Kutuphaneler`
