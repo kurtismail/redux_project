@@ -13,7 +13,7 @@ import loadinGif from "../assets/loading.gif";
 const News = () => {
   const { newsList, loading, error } = useSelector((state) => state.news);
   const dispatch = useDispatch();
-//todo
+  //todo
   useEffect(() => {
     dispatch(getNews());
 
@@ -45,7 +45,7 @@ const News = () => {
           flexWrap="wrap"
         >
           {newsList?.map((item, index) => (
-            <Card sx={{ maxWidth: 345, m: 5, maxHeight: 600 }} key={index}>
+            <Card elevation={10} sx={{ maxWidth: 345, m: 5, maxHeight: 600 }} key={index}>
               <CardMedia
                 component="img"
                 height="250"
